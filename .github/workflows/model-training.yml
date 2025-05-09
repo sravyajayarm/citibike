@@ -1,0 +1,38 @@
+name: Model Training
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  model-training:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install hopsworks pandas scikit-learn lightgbm mlflow
+
+    - name: Run Model Training Script
+      run: |
+        python train_model.py  # Assuming you have a script for model training
+
+    - name: Commit and Push Model (Optional)
+      run: |
+        git config --global user.name "Your Name"
+        git config --global user.email "your.email@example.com"
+        git add model.pkl
+        git commit -m "Add trained model"
+        git push
